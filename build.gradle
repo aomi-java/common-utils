@@ -1,0 +1,25 @@
+plugins {
+    id "io.franzbecker.gradle-lombok" version "1.14"
+}
+
+apply from: 'https://onegit.app/enterprise/public/raw/master/libraries.gradle'
+apply from: 'https://onegit.app/enterprise/public/raw/master/java.gradle'
+apply from: 'https://onegit.app/enterprise/public/raw/master/idea.gradle'
+apply from: 'https://onegit.app/enterprise/public/raw/master/wrapper.gradle'
+apply from: 'https://onegit.app/enterprise/public/raw/master/publishing.gradle'
+
+group 'software.sitb.common'
+version '1.0.0.RELEASE'
+
+repositories {
+    maven { url "${project.'owner.repo'}" }
+    maven { url "${project.'repo'}" }
+    jcenter()
+}
+
+dependencies {
+    compileOnly lib.slf4j_api
+    compileOnly lib.commons_codec
+
+    testCompile lib._test
+}
