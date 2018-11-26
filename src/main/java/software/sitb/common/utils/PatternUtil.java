@@ -14,7 +14,7 @@ public class PatternUtil {
     /**
      * phoneNo
      */
-    public static final Pattern PHONE_NO = Pattern.compile("^[1](([3][0-9])|([4][5,7,9])|([5][^4,6,9])|([6][6])|([7][3,5,6,7,8])|([8][0-9])|([9][8,9]))[0-9]{8}$");
+    public static final Pattern PHONE_NO = Pattern.compile("[1]\\d{10}");
 
 
     public static boolean isEmail(String email) {
