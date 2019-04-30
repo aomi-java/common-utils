@@ -21,7 +21,7 @@ dependencies {
     compileOnly lib.slf4j_api
 
     compileOnly lib.commons_codec
-    compile lib.commons_lang3
+    compileOnly lib.commons_lang3
 
     compileOnly lib.json
 
