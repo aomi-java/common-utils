@@ -90,10 +90,6 @@ public class ExcelUtils {
         JsonNode json = defaultObjectMapper.valueToTree(data);
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
-            String key = column.getKey();
-            if (StringUtils.isEmpty(key)) {
-                continue;
-            }
 
             CellFormat cellFormat = column.getCellFormat();
             if (null == cellFormat) {
@@ -103,7 +99,7 @@ public class ExcelUtils {
             Cell cell = row.createCell(i);
             CellStyle style = getBodyCellStyle(workbook);
 
-            JsonNode value = getJsonValue(column, key, data, json);
+            JsonNode value = getJsonValue(column, column.getKey(), data, json);
             if (null == value) {
                 continue;
             }
@@ -151,6 +147,9 @@ public class ExcelUtils {
             Map<String, Object> tmp = new HashMap<>();
             tmp.put("tmp", value);
             return defaultObjectMapper.valueToTree(tmp).get("tmp");
+        }
+        if (StringUtils.isEmpty(path)) {
+            return null;
         }
         String[] keys = path.split("\\.");
         JsonNode value = json;
