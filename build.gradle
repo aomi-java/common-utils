@@ -9,7 +9,7 @@ apply from: 'https://onegit.app/enterprise/public/raw/master/wrapper.gradle'
 apply from: 'https://onegit.app/enterprise/public/raw/master/publishing.gradle'
 
 group 'software.sitb.common'
-version '1.0.2.RELEASE'
+version '1.0.3.RELEASE'
 
 repositories {
     maven { url "${project.'owner.repo'}" }
