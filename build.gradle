@@ -22,6 +22,9 @@ dependencies {
     compileOnly lib.commons_codec
     compileOnly lib.commons_lang3
 
+    compileOnly lib.protostuff
+    compileOnly lib.objenesis
+
     compileOnly lib.json
     compileOnly lib.xml
 

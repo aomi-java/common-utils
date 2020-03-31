@@ -1,4 +1,4 @@
-package software.sitb.common.utils;
+package tech.aomi.common.utils;
 
 import java.util.regex.Pattern;
 

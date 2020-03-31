@@ -1,4 +1,4 @@
-package software.sitb.common.utils.sms;
+package tech.aomi.common.utils.sms;
 
 import org.junit.Test;
 

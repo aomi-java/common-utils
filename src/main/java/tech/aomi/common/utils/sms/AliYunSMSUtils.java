@@ -1,4 +1,4 @@
-package software.sitb.common.utils.sms;
+package tech.aomi.common.utils.sms;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
