@@ -17,6 +17,15 @@ public class DateUtils {
     private static int WEEK_START_AT = 2;
 
     /**
+     * 获取昨天
+     */
+    public static Calendar yesterday() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal;
+    }
+
+    /**
      * @return 一天的开始时间
      */
     public static Calendar dayStartTime() {
@@ -89,6 +98,17 @@ public class DateUtils {
         return calendar;
     }
 
+    public static Calendar weekLastDay() {
+        return weekLastDay(new Date());
+    }
+
+    public static Calendar weekLastDay(Date date) {
+        Calendar calendar = weekFirstDay(date);
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        dayEndTime(calendar);
+        return calendar;
+    }
+
     /**
      * @return 获取本月的第一天时间
      */
@@ -109,6 +129,46 @@ public class DateUtils {
         dayStartTime(calendar);
         return calendar;
     }
+
+    /**
+     * 获取本月最后一天
+     */
+    public static Calendar monthLastDay() {
+        return monthLastDay(new Date());
+    }
+
+    public static Calendar monthLastDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        dayEndTime(calendar);
+        return calendar;
+    }
+
+    public static Calendar yearFirstDay() {
+        return yearFirstDay(new Date());
+    }
+
+    public static Calendar yearFirstDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR));
+        dayStartTime(calendar);
+        return calendar;
+    }
+
+    public static Calendar yearLastDay() {
+        return yearLastDay(new Date());
+    }
+
+    public static Calendar yearLastDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
+        dayEndTime(calendar);
+        return calendar;
+    }
+
 
     /**
      * 设置一周开始的时间
