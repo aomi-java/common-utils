@@ -12,7 +12,9 @@ import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,36 @@ public class OkHttp3Utils {
                 throw new RuntimeException(e);
             }
             this.builder.sslSocketFactory(sslSocketFactory, trustManager);
+            return this;
+        }
+
+        public Builder trustAllHost() {
+            X509TrustManager[] trustManagers = new X509TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        }
+
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[]{};
+                        }
+                    }
+            };
+            SSLSocketFactory sslSocketFactory;
+            try {
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustManagers, null);
+                sslSocketFactory = sslContext.getSocketFactory();
+            } catch (GeneralSecurityException e) {
+                throw new RuntimeException(e);
+            }
+            this.builder.sslSocketFactory(sslSocketFactory, trustManagers[0]);
+            this.builder.hostnameVerifier((s, sslSession) -> true);
             return this;
         }
 
