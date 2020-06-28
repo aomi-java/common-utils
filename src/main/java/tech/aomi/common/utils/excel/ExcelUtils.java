@@ -46,7 +46,7 @@ public class ExcelUtils {
             }
             // 创建内容
             Row row = sheet.createRow(pageRowNum++);
-            createContent(workbook, row, columns, data.get(i));
+            createContent(headerCellStyle, row, columns, data.get(i));
         }
         LOGGER.info("处理文本耗时" + (System.currentTimeMillis() - startTime) + "ms");
         return workbook;
@@ -86,9 +86,9 @@ public class ExcelUtils {
     }
 
     // 创建正文
-    private static void createContent(Workbook workbook, Row row, List<Column> columns, Object data) {
+    private static void createContent(CellStyle cellStyle, Row row, List<Column> columns, Object data) {
         JsonNode json = defaultObjectMapper.valueToTree(data);
-        CellStyle style = getBodyCellStyle(workbook);
+
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
 
@@ -113,11 +113,11 @@ public class ExcelUtils {
                     cell.setCellValue(value.asDouble(0));
                     break;
                 case PERCENT:
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
+                    cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
                     cell.setCellValue(value.asDouble());
                     break;
                 case DATETIME:
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat("yyyy-MM-dd HH:mm:ss"));
+                    cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("yyyy-MM-dd HH:mm:ss"));
                     try {
                         if (value.isLong()) {
                             cell.setCellValue(new Date(value.asLong()));
@@ -132,7 +132,7 @@ public class ExcelUtils {
                     cell.setCellValue(value.asText());
                     break;
             }
-            cell.setCellStyle(style);
+            cell.setCellStyle(cellStyle);
 
         }
 
