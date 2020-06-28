@@ -39,7 +39,7 @@ public class ExcelUtils {
         for (int i = 0; i < data.size(); i++) {
             // 如果是每个sheet的首行
             if (i % SHEET_MAX_ROW == 0) {
-                // 创建新的sheet
+                // 创建新的sheetx
                 sheet = createSheet(workbook, i);
                 pageRowNum = 1; // 行号重置为0
                 createHeader(sheet, headerCellStyle, columns);
@@ -88,6 +88,7 @@ public class ExcelUtils {
     // 创建正文
     private static void createContent(Workbook workbook, Row row, List<Column> columns, Object data) {
         JsonNode json = defaultObjectMapper.valueToTree(data);
+        CellStyle style = getBodyCellStyle(workbook);
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
 
@@ -97,7 +98,7 @@ public class ExcelUtils {
             }
 
             Cell cell = row.createCell(i);
-            CellStyle style = getBodyCellStyle(workbook);
+
 
             JsonNode value = getJsonValue(column, column.getKey(), data, json);
             if (null == value) {
