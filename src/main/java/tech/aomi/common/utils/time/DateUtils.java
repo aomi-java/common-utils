@@ -169,6 +169,39 @@ public class DateUtils {
         return calendar;
     }
 
+    /**
+     * 判断date是否在start 和 end 之间
+     */
+    public static boolean inRange(Date start, Date end, Date date) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(start);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(end);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar.after(start) && calendar.before(end);
+    }
+
+    /**
+     * 判断date是否在start 和 end 之间
+     */
+    public static boolean inTimeRange(Date start, Date end, Date date) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(start);
+        startCalendar.set(1993, Calendar.SEPTEMBER, 22);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(end);
+        endCalendar.set(1993, Calendar.SEPTEMBER, 22);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar.after(start) && calendar.before(end);
+    }
 
     /**
      * 设置一周开始的时间
