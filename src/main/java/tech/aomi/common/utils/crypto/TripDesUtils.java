@@ -138,15 +138,15 @@ public class TripDesUtils {
 
     private static byte[] encrypt(Cipher cipher, byte[] key1, byte[] key2, byte[] key3, byte[] data) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         byte[] rslt = DesUtils.encrypt(cipher, key1, data);
-        rslt = DesUtils.decrypt(cipher, rslt, key2);
-        rslt = DesUtils.encrypt(cipher, rslt, key3);
+        rslt = DesUtils.decrypt(cipher, key2, rslt);
+        rslt = DesUtils.encrypt(cipher, key3, rslt);
         return rslt;
     }
 
     private static byte[] decrypt(Cipher cipher, byte[] key1, byte[] key2, byte[] key3, byte[] data) throws BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
         byte[] rslt = DesUtils.decrypt(cipher, key3, data);
-        rslt = DesUtils.encrypt(cipher, rslt, key2);
-        rslt = DesUtils.decrypt(cipher, rslt, key1);
+        rslt = DesUtils.encrypt(cipher, key2, rslt);
+        rslt = DesUtils.decrypt(cipher, key1, rslt);
         return rslt;
     }
 
