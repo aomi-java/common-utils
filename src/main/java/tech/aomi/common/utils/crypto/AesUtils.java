@@ -25,11 +25,12 @@ public class AesUtils {
      * @param data      数据Base64
      * @return BASE64 字符串
      */
-    public static String encryptWithBase64(String bash64Key, String data) throws Exception {
+    public static String encryptWithBase64(String bash64Key, byte[] data) throws Exception {
         return Base64.getEncoder()
                 .encodeToString(encrypt(AES,
                         Base64.getDecoder().decode(bash64Key),
-                        Base64.getDecoder().decode(data))
+                        data
+                        )
                 );
     }
 
