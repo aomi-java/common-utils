@@ -1,12 +1,13 @@
 package tech.aomi.common.utils.crypto;
 
-import org.apache.commons.codec.binary.Base64;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 /**
  * AES 工具
@@ -15,42 +16,59 @@ import java.security.SecureRandom;
  */
 public class AesUtils {
 
+    public static final String AES = "AES";
+
     /**
      * 加密
      *
-     * @param key  密钥
-     * @param data 数据
+     * @param bash64Key 密钥Base64
+     * @param data      数据Base64
      * @return BASE64 字符串
      */
-    public static String encryptWithBase64(String key, String data) throws Exception {
+    public static String encryptWithBase64(String bash64Key, String data) throws Exception {
+        return Base64.getEncoder()
+                .encodeToString(encrypt(AES,
+                        Base64.getDecoder().decode(bash64Key),
+                        Base64.getDecoder().decode(data))
+                );
+    }
+
+    public static byte[] encrypt(String cipher, byte[] key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException {
+        return encrypt(Cipher.getInstance(cipher), key, data);
+    }
+
+    public static byte[] encrypt(Cipher cipher, byte[] key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(StandardCharsets.UTF_8));
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        secureRandom.setSeed(key);
+        KeyGenerator kgen = KeyGenerator.getInstance(AES);
         kgen.init(128, secureRandom);
 
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
-        return Base64.encodeBase64String(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), AES));
+        return cipher.doFinal(data);
     }
 
     /**
      * 解密
      *
-     * @param key  密钥
-     * @param data base64数据
+     * @param bash64Key 编码的秘钥
+     * @param data      base64编码的数据
      * @return 解密的数据
      */
-    public static String decryptWithBase64(String key, String data) throws Exception {
-        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(StandardCharsets.UTF_8));
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128, secureRandom);
-
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), "AES"));
-        byte[] decryptBytes = cipher.doFinal(Base64.decodeBase64(data));
-
-        return new String(decryptBytes);
+    public static byte[] decryptWithBase64(String bash64Key, String data) throws Exception {
+        return decrypt(AES, Base64.getDecoder().decode(bash64Key), Base64.getDecoder().decode(data));
     }
 
+    public static byte[] decrypt(String cipher, byte[] key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException {
+        return decrypt(Cipher.getInstance(cipher), key, data);
+    }
+
+    public static byte[] decrypt(Cipher cipher, byte[] key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        secureRandom.setSeed(key);
+        KeyGenerator kgen = KeyGenerator.getInstance(AES);
+        kgen.init(128, secureRandom);
+
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(kgen.generateKey().getEncoded(), AES));
+        return cipher.doFinal(data);
+    }
 }
