@@ -1,38 +1,19 @@
 plugins {
     id "io.franzbecker.gradle-lombok" version "2.2"
-    id "com.jfrog.bintray" version "1.8.5"
 }
 
 group 'tech.aomi.common'
-version '1.0.7'
+version '1.0.8'
 
 apply from: 'https://onegit.com/enterprise/public/raw/master/libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/idea.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['maven']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = "common-$rootProject.name"
-        userOrg = 'aomi'
-        licenses = ['Apache-2.0']
-        publicDownloadNumbers = true
-        version {
-            name = project.version
-            desc = project.version
-        }
-    }
-}
 
 repositories {
-    maven { url "${project.'owner.repo'}" }
     maven { url "${project.'repo'}" }
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
