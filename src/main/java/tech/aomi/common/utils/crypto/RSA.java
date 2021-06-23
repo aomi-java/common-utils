@@ -1,12 +1,12 @@
 package tech.aomi.common.utils.crypto;
 
-import org.apache.commons.codec.binary.Base64;
 import tech.aomi.common.utils.binary.CodecUtils;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.*;
+import java.util.Base64;
 
 public class RSA {
 
@@ -210,7 +210,8 @@ public class RSA {
                     sb.append('\r');
                 }
             }
-            PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(Base64.decodeBase64(sb.toString()));
+            byte[] key = Base64.getDecoder().decode(sb.toString());
+            PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(key);
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             return keyFactory.generatePrivate(priPKCS8);
         } catch (FileNotFoundException var20) {
@@ -277,7 +278,8 @@ public class RSA {
      * @return 公钥
      */
     public static PublicKey parsePublicKeyWithBase64(String base64PublicKey, String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(Base64.decodeBase64(base64PublicKey));
+        byte[] key = Base64.getDecoder().decode(base64PublicKey);
+        X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(key);
         KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         return keyFactory.generatePublic(pubX509);
     }
@@ -300,7 +302,8 @@ public class RSA {
      * @return 私钥
      */
     public static PrivateKey parsePrivateKeyWithBase64(String base64PrivateKey, String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        PKCS8EncodedKeySpec pubX509 = new PKCS8EncodedKeySpec(Base64.decodeBase64(base64PrivateKey));
+        byte[] key = Base64.getDecoder().decode(base64PrivateKey);
+        PKCS8EncodedKeySpec pubX509 = new PKCS8EncodedKeySpec(key);
         KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         return keyFactory.generatePrivate(pubX509);
     }

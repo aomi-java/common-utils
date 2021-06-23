@@ -1,6 +1,5 @@
 package tech.aomi.common.utils.crypto;
 
-import org.apache.commons.codec.binary.Base64;
 import tech.aomi.common.utils.binary.CodecUtils;
 
 import javax.crypto.BadPaddingException;
@@ -10,18 +9,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
+import java.util.Optional;
 
 /**
  * RSA 工具类
+ * <pre>
+ *  RSA/ECB/PKCS1Padding (1024, 2048)
+ *  RSA/ECB/OAEPWithSHA-1AndMGF1Padding (1024, 2048)
+ *  RSA/ECB/OAEPWithSHA-256AndMGF1Padding (1024, 2048)
+ * </pre>
  */
 public class RSAUtil {
 
     public static final String DEFAULT_CIPHER = "RSA/ECB/PKCS1Padding";
 
+    public static final String SIGN_ALGORITHMS_SHA1 = "SHA1WithRSA";
+    public static final String SIGN_ALGORITHMS_SHA256 = "SHA256WithRSA";
+    public static final String SIGN_ALGORITHMS_SHA512 = "SHA512WithRSA";
+
     /**
      * 默认签名算法
      */
-    public static final String DEFAULT_SIGN_ALGORITHMS = "SHA1WithRSA";
+    public static final String DEFAULT_SIGN_ALGORITHMS = SIGN_ALGORITHMS_SHA1;
+    private static volatile String signAlgorithms = null;
 
 //    /**
 //     * 使用私钥解密
@@ -83,7 +94,9 @@ public class RSAUtil {
      */
     public static byte[] privateKeyDecryptWithBase64(String privateKeyBase64, String base64CipherText, Cipher cipher) throws Exception {
         PrivateKey privateKey = RSA.parsePrivateKeyWithBase64(privateKeyBase64);
-        return privateKeyDecrypt(privateKey, Base64.decodeBase64(base64CipherText), cipher);
+
+        byte[] ciphertext = Base64.getDecoder().decode(base64CipherText);
+        return privateKeyDecrypt(privateKey, ciphertext, cipher);
     }
 
     /**
@@ -191,7 +204,7 @@ public class RSAUtil {
      */
     public static String publicKeyEncryptWithBase64(PublicKey publicKey, byte[] plaintext) throws Exception {
         byte[] ciphertext = publicKeyEncrypt(publicKey, plaintext, Cipher.getInstance(DEFAULT_CIPHER));
-        return Base64.encodeBase64String(ciphertext);
+        return Base64.getEncoder().encodeToString(ciphertext);
     }
 
     /**
@@ -204,7 +217,7 @@ public class RSAUtil {
      */
     public static String publicKeyEncryptWithBase64(PublicKey publicKey, byte[] plaintext, Cipher cipher) throws Exception {
         byte[] ciphertext = publicKeyEncrypt(publicKey, plaintext, cipher);
-        return Base64.encodeBase64String(ciphertext);
+        return Base64.getEncoder().encodeToString(ciphertext);
     }
 
     /**
@@ -233,7 +246,7 @@ public class RSAUtil {
     }
 
     public static String signWithBase64(String privateKeyStr, byte[] data) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
-        return signWithBase64(privateKeyStr, DEFAULT_SIGN_ALGORITHMS, data);
+        return signWithBase64(privateKeyStr, signAlgorithms(), data);
     }
 
     /**
@@ -251,7 +264,7 @@ public class RSAUtil {
     public static String signWithBase64(String privateKeyStr, String algorithm, byte[] data) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         PrivateKey privateKey = RSA.parsePrivateKeyWithBase64(privateKeyStr);
         byte[] sign = sign(privateKey, algorithm, data);
-        return Base64.encodeBase64String(sign);
+        return Base64.getEncoder().encodeToString(sign);
     }
 
     public static byte[] sign(PrivateKey privateKey, String algorithm, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
@@ -262,7 +275,7 @@ public class RSAUtil {
     }
 
     public static boolean signVerifyWithBase64(String publicKey, byte[] data, String signature) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        return signVerifyWithBase64(publicKey, DEFAULT_SIGN_ALGORITHMS, data, signature);
+        return signVerifyWithBase64(publicKey, signAlgorithms(), data, signature);
     }
 
     public static boolean signVerifyWithBase64(String publicKey, String algorithm, byte[] data, String signature) throws InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
@@ -270,7 +283,7 @@ public class RSAUtil {
                 RSA.parsePublicKeyWithBase64(publicKey),
                 algorithm,
                 data,
-                Base64.decodeBase64(signature)
+                Base64.getDecoder().decode(signature)
         );
     }
 
@@ -311,5 +324,13 @@ public class RSAUtil {
         } catch (IOException e) {
             throw new Exception("字节输出流异常", e);
         }
+    }
+
+    private static String signAlgorithms() {
+        return Optional.ofNullable(signAlgorithms).orElse(DEFAULT_SIGN_ALGORITHMS);
+    }
+
+    public static void setSignAlgorithms(String algorithms) {
+        signAlgorithms = algorithms;
     }
 }
