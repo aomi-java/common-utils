@@ -104,22 +104,61 @@ public class AesUtils {
         return encryptWithBase64(transformation, keyLength, randomAlgorithm(), base64Key, plaintext);
     }
 
+
+    public static String encryptWithIvBase64(String bash64Key, String base64Iv, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return encryptWithIvBase64(transformation(), bash64Key, base64Iv, plaintext);
+    }
+
+    public static String encryptWithIvBase64(String transformation, String base64Key, String base64Iv, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return encryptWithIvBase64(transformation, keyLength(), base64Key, base64Iv, plaintext);
+    }
+
+    public static String encryptWithIvBase64(String transformation, int keyLength, String base64Key, String base64Iv, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return encryptWithBase64(transformation, keyLength, randomAlgorithm(), base64Key, base64Iv, plaintext);
+    }
+
     public static String encryptWithBase64(String transformation, int keyLength, String secureRandomAlgorithm, String base64Key, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        byte[] ciphertext = encrypt(transformation, keyLength, secureRandomAlgorithm, Base64.getDecoder().decode(base64Key), plaintext);
+        return encryptWithBase64(
+                transformation,
+                keyLength,
+                secureRandomAlgorithm,
+                base64Key,
+                base64Key,
+                plaintext
+        );
+    }
+
+    public static String encryptWithBase64(String transformation, int keyLength, String secureRandomAlgorithm, String base64Key, String base64Iv, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        byte[] ciphertext = encrypt(transformation, keyLength, secureRandomAlgorithm,
+                Base64.getDecoder().decode(base64Key),
+                Base64.getDecoder().decode(base64Iv),
+                plaintext);
         return Base64.getEncoder().encodeToString(ciphertext);
     }
 
 
     public static byte[] encrypt(byte[] key, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        return encrypt(transformation(), key, plaintext);
+        return encrypt(transformation(), key, key, plaintext);
+    }
+
+    public static byte[] encrypt(byte[] key, byte[] iv, byte[] plaintext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return encrypt(transformation(), key, iv, plaintext);
     }
 
     public static byte[] encrypt(String transformation, byte[] key, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        return encrypt(transformation, key, key, plaintext);
+    }
+
+    public static byte[] encrypt(String transformation, byte[] key, byte[] iv, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         return encrypt(transformation, keyLength(), key, plaintext);
     }
 
     public static byte[] encrypt(String transformation, int keyLength, byte[] key, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        return encrypt(transformation, keyLength, randomAlgorithm(), key, plaintext);
+        return encrypt(transformation, keyLength, key, key, plaintext);
+    }
+
+    public static byte[] encrypt(String transformation, int keyLength, byte[] key, byte[] iv, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        return encrypt(transformation, keyLength, randomAlgorithm(), key, iv, plaintext);
     }
 
     /**
@@ -137,6 +176,10 @@ public class AesUtils {
      * @throws IllegalBlockSizeException
      */
     public static byte[] encrypt(String transformation, int keyLength, String secureRandomAlgorithm, byte[] key, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        return encrypt(transformation, keyLength, secureRandomAlgorithm, key, key, plaintext);
+    }
+
+    public static byte[] encrypt(String transformation, int keyLength, String secureRandomAlgorithm, byte[] key, byte[] ivData, byte[] plaintext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         SecureRandom secureRandom = SecureRandom.getInstance(secureRandomAlgorithm);
         secureRandom.setSeed(key);
         KeyGenerator kgen = KeyGenerator.getInstance(AES);
@@ -146,7 +189,7 @@ public class AesUtils {
 
         Cipher cipher = Cipher.getInstance(transformation);
         if (transformation.contains("CBC")) {
-            IvParameterSpec iv = new IvParameterSpec(key);
+            IvParameterSpec iv = new IvParameterSpec(ivData);
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, iv);
         } else {
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
@@ -155,6 +198,21 @@ public class AesUtils {
         return cipher.doFinal(plaintext);
     }
 
+    public static byte[] decryptWithIvBase64(String bash64Key, String base64Iv, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return decryptWithIvBase64(transformation(), bash64Key, base64Iv, base64Ciphertext);
+    }
+
+    public static byte[] decryptWithIvBase64(String transformation, String bash64Key, String base64Iv, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return decryptWithIvBase64(transformation, keyLength(), bash64Key, base64Iv, base64Ciphertext);
+    }
+
+    public static byte[] decryptWithIvBase64(String transformation, int keyLength, String base64Key, String base64Iv, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return decryptWithIvBase64(transformation, keyLength, randomAlgorithm(), base64Key, base64Iv, base64Ciphertext);
+    }
+
+    public static byte[] decryptWithIvBase64(String transformation, int keyLength, String secureRandomAlgorithm, String bash64Key, String base64Iv, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return decryptWithBase64(transformation, keyLength, secureRandomAlgorithm, bash64Key, base64Iv, base64Ciphertext);
+    }
 
     /**
      * 解密
@@ -176,19 +234,49 @@ public class AesUtils {
     }
 
     public static byte[] decryptWithBase64(String transformation, int keyLength, String secureRandomAlgorithm, String bash64Key, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        return decrypt(transformation, keyLength, secureRandomAlgorithm, Base64.getDecoder().decode(bash64Key), Base64.getDecoder().decode(base64Ciphertext));
+        return decryptWithBase64(
+                transformation,
+                keyLength,
+                secureRandomAlgorithm,
+                bash64Key,
+                bash64Key,
+                base64Ciphertext
+        );
+    }
+
+    public static byte[] decryptWithBase64(String transformation, int keyLength, String secureRandomAlgorithm, String bash64Key, String base64IvData, String base64Ciphertext) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return decrypt(
+                transformation,
+                keyLength,
+                secureRandomAlgorithm,
+                Base64.getDecoder().decode(bash64Key),
+                Base64.getDecoder().decode(base64IvData),
+                Base64.getDecoder().decode(base64Ciphertext)
+        );
     }
 
     public static byte[] decrypt(byte[] key, byte[] ciphertext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         return decrypt(transformation(), key, ciphertext);
     }
 
+    public static byte[] decrypt(byte[] key, byte[] ivData, byte[] ciphertext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return decrypt(transformation(), key, ivData, ciphertext);
+    }
+
     public static byte[] decrypt(String transformation, byte[] key, byte[] ciphertext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         return decrypt(transformation, keyLength(), key, ciphertext);
     }
 
+    public static byte[] decrypt(String transformation, byte[] key, byte[] ivData, byte[] ciphertext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        return decrypt(transformation, keyLength(), key, ivData, ciphertext);
+    }
+
     public static byte[] decrypt(String transformation, int keyLength, byte[] key, byte[] ciphertext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        return decrypt(transformation, keyLength, randomAlgorithm(), key, ciphertext);
+        return decrypt(transformation, keyLength, key, key, ciphertext);
+    }
+
+    public static byte[] decrypt(String transformation, int keyLength, byte[] key, byte[] ivData, byte[] ciphertext) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+        return decrypt(transformation, keyLength, randomAlgorithm(), key, ivData, ciphertext);
     }
 
     /**
@@ -207,6 +295,10 @@ public class AesUtils {
      * @throws NoSuchPaddingException
      */
     public static byte[] decrypt(String transformation, int keyLength, String secureRandomAlgorithm, byte[] key, byte[] ciphertext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
+        return decrypt(transformation, keyLength, secureRandomAlgorithm, key, key, ciphertext);
+    }
+
+    public static byte[] decrypt(String transformation, int keyLength, String secureRandomAlgorithm, byte[] key, byte[] ivData, byte[] ciphertext) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         SecureRandom secureRandom = SecureRandom.getInstance(secureRandomAlgorithm);
         secureRandom.setSeed(key);
         KeyGenerator kgen = KeyGenerator.getInstance(AES);
@@ -216,7 +308,7 @@ public class AesUtils {
 
         Cipher cipher = Cipher.getInstance(transformation);
         if (transformation.contains("CBC")) {
-            IvParameterSpec iv = new IvParameterSpec(key);
+            IvParameterSpec iv = new IvParameterSpec(ivData);
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
         } else {
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
