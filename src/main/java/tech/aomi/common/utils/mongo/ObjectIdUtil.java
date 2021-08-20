@@ -98,15 +98,16 @@ public class ObjectIdUtil {
 
     public static String minId(Date date) {
         final ByteBuffer bb = ByteBuffer.wrap(new byte[12]);
-        bb.putInt((int) date.getTime() / 1000);// 4位
+        bb.putInt((int) (date.getTime() / 1000));// 4位
         bb.putInt(MIN_VALUE);// 4位
         bb.putInt(MIN_VALUE);// 4位
         return hexString(bb.array(), false);
+
     }
 
     public static String maxId(Date date) {
         final ByteBuffer bb = ByteBuffer.wrap(new byte[12]);
-        bb.putInt((int) date.getTime() / 1000);// 4位
+        bb.putInt((int) (date.getTime() / 1000));// 4位
         bb.putInt(MAX_VALUE);// 4位
         bb.putInt(MAX_VALUE);// 4位
         return hexString(bb.array(), false);
@@ -293,4 +294,8 @@ public class ObjectIdUtil {
         return Thread.currentThread().getContextClassLoader();
     }
 
+
+    public static void main(String[] args) {
+        System.out.println(minId(new Date()));
+    }
 }
