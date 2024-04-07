@@ -1,6 +1,6 @@
 package tech.aomi.common.utils.crypto;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

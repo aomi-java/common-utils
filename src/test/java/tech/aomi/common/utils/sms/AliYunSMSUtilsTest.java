@@ -1,6 +1,6 @@
 package tech.aomi.common.utils.sms;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author 田尘殇Sean(sean.snow @ live.com) createAt 2018/8/13

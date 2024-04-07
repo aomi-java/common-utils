@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
 /**
@@ -15,6 +16,11 @@ public class Json {
 
     private static final ObjectMapper defaultObjectMapper = new ObjectMapper();
     private static volatile ObjectMapper objectMapper = null;
+
+    static {
+        defaultObjectMapper.registerModule(new JavaTimeModule());
+    }
+
 
     // Ensures that there always is *a* object mapper
     private static ObjectMapper mapper() {

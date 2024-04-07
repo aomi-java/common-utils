@@ -1,38 +1,59 @@
 plugins {
-    id "io.franzbecker.gradle-lombok" version "2.2"
+    id 'java'
+    id "io.freefair.lombok" version "8.1.0"
+    id 'io.spring.dependency-management' version '1.1.2'
 }
 
 group 'tech.aomi.common'
-version '1.0.13'
+version '1.0.14_0-SNAPSHOT'
 
 apply from: 'https://onegit.com/enterprise/public/raw/master/libraries.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/idea.gradle'
-//apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
+apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/publish-center.gradle'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_20
+}
 
 repositories {
-    maven { url "${project.'repo'}" }
     mavenCentral()
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
-    compileOnly lib.slf4j_api
+    compileOnly "org.slf4j:slf4j-api:1.7.25"
 
-    compileOnly lib.okhttp3
+    compileOnly "com.squareup.okhttp3:okhttp:4.12.0"
 
-    compileOnly lib.commons_codec
-    compileOnly lib.commons_lang3
+    compileOnly "commons-codec:commons-codec:1.16.1"
+    compileOnly "org.apache.commons:commons-lang3:3.14.0"
 
-    compileOnly lib.protostuff
-    compileOnly lib.objenesis
+    compileOnly "com.dyuproject.protostuff:protostuff-core:1.0.12"
+    compileOnly "com.dyuproject.protostuff:protostuff-runtime:1.0.12"
 
-    compileOnly lib.json
-    compileOnly lib.xml
+    compileOnly "org.objenesis:objenesis:2.5.1"
 
-    compileOnly lib.poi
-    compileOnly lib.poi_ooxml
+    compileOnly "com.fasterxml.jackson.core:jackson-core:2.17.0"
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:2.17.0"
+    compileOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0"
+    compileOnly "com.fasterxml.jackson.core:jackson-core:2.17.0"
+    compileOnly "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.0"
 
-    testImplementation lib._test
+
+    compileOnly "org.apache.poi:poi:5.2.5"
+    compileOnly "org.apache.poi:poi-ooxml:5.2.5"
+
+    testImplementation('org.junit.jupiter:junit-jupiter:5.7.0')
+    testImplementation "com.fasterxml.jackson.core:jackson-core:2.17.0"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.17.0"
+    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0"
+    testImplementation "com.fasterxml.jackson.core:jackson-core:2.17.0"
+    testImplementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.0"
+
 }
