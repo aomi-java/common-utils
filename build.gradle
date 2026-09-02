@@ -1,24 +1,23 @@
 plugins {
     id 'java'
-    id "io.freefair.lombok" version "8.1.0"
-    id 'io.spring.dependency-management' version '1.1.2'
+    id 'java-library'
+    id 'maven-publish'
+    id "io.freefair.lombok" version "9.5.0"
 }
 
 group 'tech.aomi.common'
 version '1.0.14_0-SNAPSHOT'
 
-apply from: 'https://onegit.com/enterprise/public/raw/master/libraries.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/publish-center.gradle'
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
 }
 
 repositories {
     mavenCentral()
     maven {
-        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        url "https://nexus.stelarx.tech/repository/maven-snapshots/"
     }
 }
 
@@ -56,4 +55,28 @@ dependencies {
     testImplementation "com.fasterxml.jackson.core:jackson-core:2.17.0"
     testImplementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.0"
 
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                allVariants {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = project.version.endsWith('-SNAPSHOT')
+                    ? 'https://nexus.stelarx.tech/repository/maven-snapshots/'
+                    : 'https://nexus.stelarx.tech/repository/maven-releases/'
+            credentials {
+                username System.getenv('REPO_USERNAME')
+                password System.getenv('REPO_PASSWORD')
+            }
+        }
+    }
 }
