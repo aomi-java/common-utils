@@ -1,14 +1,14 @@
 package tech.aomi.common.utils.excel;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.NullNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.NullNode;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class ExcelUtils {
 
-    private static final ObjectMapper defaultObjectMapper = new ObjectMapper();
+    private static final JsonMapper defaultObjectMapper = JsonMapper.builder().build();
 
     private static final int ROW_ACCESS_WINDOW_SIZE = 100;
     private static final int SHEET_MAX_ROW = 100000;

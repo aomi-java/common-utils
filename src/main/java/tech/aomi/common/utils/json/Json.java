@@ -1,10 +1,9 @@
 package tech.aomi.common.utils.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -14,16 +13,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  */
 public class Json {
 
-    private static final ObjectMapper defaultObjectMapper = new ObjectMapper();
-    private static volatile ObjectMapper objectMapper = null;
-
-    static {
-        defaultObjectMapper.registerModule(new JavaTimeModule());
-    }
+    private static final JsonMapper defaultObjectMapper = JsonMapper.builder().build();
+    private static volatile JsonMapper objectMapper = null;
 
 
     // Ensures that there always is *a* object mapper
-    private static ObjectMapper mapper() {
+    private static JsonMapper mapper() {
         if (objectMapper == null) {
             return defaultObjectMapper;
         } else {
@@ -138,7 +133,7 @@ public class Json {
      *
      * @param mapper mapper
      */
-    public static void setObjectMapper(ObjectMapper mapper) {
+    public static void setObjectMapper(JsonMapper mapper) {
         objectMapper = mapper;
     }
 }

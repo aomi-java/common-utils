@@ -1,12 +1,11 @@
 package tech.aomi.common.utils.xml;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import java.io.IOException;
 import java.io.StringWriter;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 /**
  * XML 工具类
@@ -14,9 +13,9 @@ import java.io.StringWriter;
  * @author 田尘殇Sean sean.snow@live.com
  */
 public class Xml {
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonMapper objectMapper = JsonMapper.builder().build();
 
-    private static XmlMapper defaultXmlMapper = new XmlMapper();
+    private static XmlMapper defaultXmlMapper = XmlMapper.builder().build();
     private static volatile XmlMapper xmlMapper = null;
 
     private static XmlMapper mapper() {
@@ -37,15 +36,15 @@ public class Xml {
     public static String toJson(String xml) {
         StringWriter writer = new StringWriter();
         try {
-            JsonParser jsonParser = mapper().getFactory().createParser(xml);
-            JsonGenerator jg = objectMapper.getFactory().createGenerator(writer);
+            JsonParser jsonParser = mapper().tokenStreamFactory().createParser(xml);
+            JsonGenerator jg = objectMapper.tokenStreamFactory().createGenerator(writer);
             while (jsonParser.nextToken() != null) {
                 jg.copyCurrentEvent(jsonParser);
             }
             jsonParser.close();
             jg.close();
             return writer.toString();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             return null;
         }
     }

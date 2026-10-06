@@ -97,17 +97,36 @@ public class ObjectIdUtil {
     }
 
     public static String minId(Date date) {
+        return minId(date.getTime());
+    }
+
+    /**
+     * 根据毫秒时间戳生成最小ObjectId
+     *
+     * @param epochMillis 毫秒时间戳
+     * @return 最小ObjectId
+     */
+    public static String minId(long epochMillis) {
         final ByteBuffer bb = ByteBuffer.wrap(new byte[12]);
-        bb.putInt((int) (date.getTime() / 1000));// 4位
+        bb.putInt((int) (epochMillis / 1000));// 4位
         bb.putInt(MIN_VALUE);// 4位
         bb.putInt(MIN_VALUE);// 4位
         return hexString(bb.array(), false);
-
     }
 
     public static String maxId(Date date) {
+        return maxId(date.getTime());
+    }
+
+    /**
+     * 根据毫秒时间戳生成最大ObjectId
+     *
+     * @param epochMillis 毫秒时间戳
+     * @return 最大ObjectId
+     */
+    public static String maxId(long epochMillis) {
         final ByteBuffer bb = ByteBuffer.wrap(new byte[12]);
-        bb.putInt((int) (date.getTime() / 1000));// 4位
+        bb.putInt((int) (epochMillis / 1000));// 4位
         bb.putInt(MAX_VALUE);// 4位
         bb.putInt(MAX_VALUE);// 4位
         return hexString(bb.array(), false);
